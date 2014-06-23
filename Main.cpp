@@ -97,47 +97,50 @@ int mergesort(int arr[], int n)	{
 }
 
 int quick_sorter(int arr[], int low, int high, int counter)	{
-	std::cout << "Entering quick_sorter" << std::endl;
-	int left = low;
-	int right = high-1;
 	int pivot = high;
+	int right = high-1;
+	int left = low;
 	int temp;
+	std::cout << "Pivot: " << arr[pivot] << std::endl << "left index: " <<
+	left << std::endl << "right index: " << right << std::endl;
 
 	while(left < right)	{
-		while(arr[left] > arr[pivot] && right > left)	{
-			if(right < pivot)	{
-				temp = arr[left];
-				arr[left] = arr[right];
-				arr[right] = temp;
-			}
-			right--;
+		if(arr[left] < arr[pivot])	{
+			left++;
 			counter++;
 		}
-		left++;
+		if(arr[left] >= arr[pivot])	{
+			if(arr[left] > arr[right])	{
+				temp = arr[left];
+				arr[left] = arr[right];
+				arr[right] = temp;				
+			}
+			counter++;
+			--right;
+		}
+	}
+
+	bool swap = false;
+	while(swap == false)	{
+		if(arr[right] >= arr[pivot])	{
+			temp = arr[right];
+			arr[right] = arr[pivot];
+			arr[pivot] = temp;
+			swap = true;
+			--right;
+		}
+		if(right == pivot)	{
+			swap = true;
+			--right;
+		}
+		++right;
 		counter++;
 	}
-	while(left < pivot)	{
-		if(arr[left] > arr[pivot])	{
-			temp = arr[pivot];
-			arr[pivot] = arr[left];
-			arr[left] = temp;
-		}
-		left++;
+	if(low < right -1)	{
+		counter = quick_sorter(arr, low, right-1, counter);
 	}
-	for(int i = low; i <= high; ++i)	{
-		std::cout << arr[i] << std::endl;
-	}
-
-	return counter;
-}
-
-int quick_partioner(int arr[], int low, int high, int counter)	{
-	int mid;
-	if(low < high)	{
-		counter = quick_sorter(arr, low, high, counter);
-		int mid = (low+high)/2;
-		counter = quick_partioner(arr, low, mid, counter);
-		counter = quick_partioner(arr, mid+1, high, counter);
+	if(right+1 < high)	{
+		counter = quick_sorter(arr, right+1, high, counter);
 	}
 
 	return counter;
@@ -149,7 +152,7 @@ int quicksort(int arr[], int n)	{
 
 	int barometer = 0;
 
-	barometer = quick_partioner(arr, 0, n-1, barometer);
+	barometer = quick_sorter(arr, 0, n-1, barometer);
 
 	std::cout << "SORTED ARRAY IS" << std::endl <<
 	"-----------" << std::endl;
@@ -163,12 +166,14 @@ int quicksort(int arr[], int n)	{
 
 
 int main()	{
-	int n = rand() % 10 + 10;
+
+	int n = rand() % 100 + 50;
 	int arr[n];
 	for(int i = 0; i < n; ++i)	{
 		arr[i] = rand() % 100;
 		std::cout << arr[i] << ",";
 	}
+
 /*
 	int a = insertionsort(arr, n);
 	std::cout << "Insertion sort barometer: " << a << std::endl;
@@ -180,8 +185,11 @@ int main()	{
 
 	int b = mergesort(arr, n);
 	std::cout << "Merge sort barometer: " << b << std::endl;
-*/
+*/	
+/*
+	int n = 5;
+	int arr[] = {1,2,3,4,5};
+*/	
 	int c = quicksort(arr,n);
 	std::cout << "Quick sort barometer: " << c << std::endl;
-
 }
