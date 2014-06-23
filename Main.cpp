@@ -4,9 +4,10 @@
 #include <fstream>
 #include <stdlib.h>
 
-int number_swap(int arr[], int i, int counter)	{
+template <class T>
+int number_swap(T arr[], int i, int counter)	{
 	int j = i;
-	int temp;
+	T temp;
 	while(j > 0 && arr[j] < arr[j-1])	{
 		temp = arr[j];
 		arr[j] = arr[j-1];
@@ -17,7 +18,8 @@ int number_swap(int arr[], int i, int counter)	{
 	return counter;
 }
 
-int insertionsort(int arr[], int n)	{
+template <class T>
+int insertionsort(T arr[], int n)	{
 	std::cout << "Insertion Sort" << std::endl 
 	<< "-------------" << std::endl << std::endl;
 
@@ -25,15 +27,15 @@ int insertionsort(int arr[], int n)	{
 	for(int i = 1; i < n; ++i)	{
 		barometer = number_swap(arr, i, barometer); 
 	}
-/*
+
 	for(int i = 0; i < n; ++i)	{
 		std::cout << arr[i] << std::endl;
 	}
-*/
+
 	return barometer;
 }
-
-int merge(int arr[], int temp[], int low, int mid, int high, int counter)	{
+template <class T>
+int merge(T arr[], T temp[], int low, int mid, int high, int counter)	{
 	int lower = low;
 	int index = low;
 	int pivot = mid+1;
@@ -72,7 +74,8 @@ int merge(int arr[], int temp[], int low, int mid, int high, int counter)	{
 
 }
 
-int merge_builder(int arr[], int temp[], int low, int high, int counter)	{
+template <class T>
+int merge_builder(T arr[], T temp[], int low, int high, int counter)	{
 	int mid;
 	if(low < high)	{
 		mid = (low+high)/2;
@@ -83,26 +86,28 @@ int merge_builder(int arr[], int temp[], int low, int high, int counter)	{
 	return counter;
 }
 
-int mergesort(int arr[], int n)	{
+template <class T>
+int mergesort(T arr[], int n)	{
 	std::cout << "Merge sort" << std::endl 
 	<< "-------------" << std::endl << std::endl;
 
-	int temp[n];
+	T temp[n];
 	int barometer = 0;
 	barometer = merge_builder(arr, temp, 0, n-1, barometer);
-/*
+
 	for(int i = 0; i < n; ++i)	{
 		std::cout << arr[i] << std::endl;
 	}
-*/
+
 	return barometer;
 }
 
-int quick_sorter(int arr[], int low, int high, int counter)	{
+template <class T>
+int quick_sorter(T arr[], int low, int high, int counter)	{
 	int pivot = high;
 	int right = high-1;
 	int left = low;
-	int temp;
+	T temp;
 /*
 	std::cout << "Pivot: " << arr[pivot] << std::endl << "left index: " <<
 	left << std::endl << "right index: " << right << std::endl;
@@ -149,7 +154,8 @@ int quick_sorter(int arr[], int low, int high, int counter)	{
 	return counter;
 }
 
-int quicksort(int arr[], int n)	{
+template <class T>
+int quicksort(T arr[], int n)	{
 	std::cout << "Quick Sort" << std::endl
 	<< "-------------" << std::endl << std::endl;
 
@@ -157,29 +163,29 @@ int quicksort(int arr[], int n)	{
 
 	barometer = quick_sorter(arr, 0, n-1, barometer);
 
-/*	std::cout << "SORTED ARRAY IS" << std::endl <<
+	std::cout << "SORTED ARRAY IS" << std::endl <<
 	"-----------" << std::endl;
 	for(int i = 0; i < n; ++i)	{
 		std::cout << arr[i] << std::endl;
 	}
-*/
+
 	return barometer;
 
 }
 
-int shellsort(int arr[], int n)	{
+template <class T>
+int shellsort(T arr[], int n)	{
 	std::cout << "Shell Sort" << std::endl
 	<< "-------------" << std::endl << std::endl;	
 	int barometer = 0;
 	int gap = n;
-	int temp;
+	T temp;
 	bool swap = false;
-	int back = 0;
+	int back;
 	while(gap > 1)	{
 		gap = gap/2;
 		std::cout << "Gap Size: " << gap << std::endl;
-
-		for(int i = 0; (i+gap) < n; i++)	{
+		for(int i = 0; (i+gap)<n; i++)	{
 			back = i;
 			barometer++;
 			if(arr[i] > arr[i+gap] && (i+gap) < n)	{
@@ -191,27 +197,33 @@ int shellsort(int arr[], int n)	{
 			while(swap == true)	{
 				swap = false;
 				barometer++;
-				back -= gap;
-				if(arr[back] > arr[back+gap] && back >= 0)	{
+				if(back-gap >= 0)	{
+					back -= gap;
+
+					if(arr[back] > arr[back+gap] && back >= 0)	{
 					temp = arr[back];
 					arr[back] = arr[back+gap];
 					arr[back+gap] = temp;
 					swap = true;
+					}
 				}
 			}
 
 		}
+	
 		for(int i = 0; i < n; ++i)	{
 			std::cout << arr[i] << ", ";
 		}
 		std::cout << std::endl << std::endl <<"repeating shell loop" << std::endl;
+	
 	}
 	return barometer;
 }
 
 int main()	{
+/*
 	int num = 100;
-	int n = rand() % 50 + 10;
+	int n = rand() % 200 + 200;
 	int arr[n];
 	for(int i = 0; i < n; ++i)	{
 		arr[i] = rand() % num;
@@ -221,6 +233,7 @@ int main()	{
 	int a = insertionsort(arr, n);
 	std::cout << "Insertion sort barometer: " << a << std::endl;
 
+
 	for(int i = 0; i < n; ++i)	{
 		arr[i] = rand() % num;
 		std::cout << arr[i] << ", ";
@@ -229,10 +242,12 @@ int main()	{
 	int b = mergesort(arr, n);
 	std::cout << "Merge sort barometer: " << b << std::endl;
 
+
 	for(int i = 0; i < n; ++i)	{
 		arr[i] = rand() % num;
 		std::cout << arr[i] << ", ";
 	}	
+
 
 	int c = quicksort(arr,n);
 	std::cout << "Quick sort barometer: " << c << std::endl;
@@ -241,11 +256,10 @@ int main()	{
 		arr[i] = rand() % num;
 		std::cout << arr[i] << ", ";
 	}
+*/
 
-	for(int i = 0; i < n; ++i)	{
-		arr[i] = rand() % num;
-		std::cout << arr[i] << ", ";
-	}
+	std::string arr[] = {"apple", "dog", "cat", "fish", "whale", "horse", "cow", "parrot", "shark", "dolphin", "crow"};
+	int n = 11;
 
 	int d = shellsort(arr,n);
 	std::cout << "Shell sort barometer: " << d << std::endl;
