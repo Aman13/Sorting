@@ -5,7 +5,6 @@
  
 using namespace std;
 
-
 const int INSERTION = 0;
 const int QUICK = 1;
 const int MERGE = 2;
@@ -23,6 +22,10 @@ bool search(T arr[], int n, T target);
 template <class T>
 void sortTestResult(T arr[], int n, int sort);
 
+//Checks and Swaps array values for insertion sort
+//Param: arr[] = array to be sorted. i = the array value to be swapped
+//      counter = barometer operation counter.
+//Post: Returns the barometer operation counter and array with swapped values
 template <class T>
 int number_swap(T arr[], int i, int counter)	{
 	int j = i;
@@ -37,28 +40,32 @@ int number_swap(T arr[], int i, int counter)	{
 	return counter;
 }
 
+//Insertion Sort function
+//Param: arr[] = array to be sorted
+//		 n = size of array
+//Post: Array is sorted, returns barometer operation value (how many comparisons were made).
 template <class T>
 int insertionsort(T arr[], int n)	{
-	std::cout << "Insertion Sort" << std::endl 
-	<< "-------------" << std::endl << std::endl;
-
 	int barometer = 0;
 	for(int i = 1; i < n; ++i)	{
 		barometer = number_swap(arr, i, barometer); 
 	}
-
-	for(int i = 0; i < n; ++i)	{
-		std::cout << arr[i] << std::endl;
-	}
-
 	return barometer;
+
 }
+//Re-arranges value using merge sort algorithm putting values in a temporary array
+//before inserting back into original array.
+//Param: arr[] = array to be sorted. temp[] = temporary array to hold values.
+//		low = lower bound of the array. mid = mid index of the array. high = upper bound of the array.
+//		counter = barometer operation counter.
+//Post:Array portion given is sorted. Returns barometer operation count.
 template <class T>
 int merge(T arr[], T temp[], int low, int mid, int high, int counter)	{
 	int lower = low;
 	int index = low;
 	int pivot = mid+1;
-
+	//Compares the value of above and below the pivot
+	//swapping values when necessary.
 	while((lower <= mid)&&(pivot <= high))	{
 		if(arr[lower] <= arr[pivot])	{
 			temp[index] = arr[lower];
@@ -93,9 +100,17 @@ int merge(T arr[], T temp[], int low, int mid, int high, int counter)	{
 
 }
 
+//Breaks array into upper and lowerbound until it is as small as possible
+//Sends the partitions to be sorted by merge function.
+//Param: arr[] = array to be sorted. temp[] = temperorary array to help with sorting
+//		low = lowerbound index of the array. high = upperbound index of the array.
+//		counter = barometer operation value holder.
+//Post: arr[] is sorted, returns counter which holds value for barometer operation.
 template <class T>
 int merge_builder(T arr[], T temp[], int low, int high, int counter)	{
 	int mid;
+	//Partitions array into smaller pieces until partioners are already sorted.
+	//Recursivly merges partitions until entire array has called merge and is sorted.
 	if(low < high)	{
 		mid = (low+high)/2;
 		counter = merge_builder(arr, temp, low, mid, counter);
@@ -105,32 +120,31 @@ int merge_builder(T arr[], T temp[], int low, int high, int counter)	{
 	return counter;
 }
 
+//Intiates merge sort process on an array.
+//Param: arr[] = array to be sorted. n = size of array.
+//Post: arr[] is sorted and returns barometer operation value (number of comparisons made).
 template <class T>
 int mergesort(T arr[], int n)	{
-	std::cout << "Merge sort" << std::endl 
-	<< "-------------" << std::endl << std::endl;
-
+	
 	T temp[n];
 	int barometer = 0;
 	barometer = merge_builder(arr, temp, 0, n-1, barometer);
 
-	for(int i = 0; i < n; ++i)	{
-		std::cout << arr[i] << std::endl;
-	}
-
 	return barometer;
 }
 
+//Runs quick sort algorithm, and sorts the array given.
+//Param: arr[] = array to be sorted. low = lower bound index for the array
+//		high = upper bound index for the array. counter = counts number of barometer operation.
+//Post: arr[] is sorted and returns barometer operation value.
 template <class T>
 int quick_sorter(T arr[], int low, int high, int counter)	{
 	int pivot = high;
 	int right = high-1;
 	int left = low;
 	T temp;
-/*
-	std::cout << "Pivot: " << arr[pivot] << std::endl << "left index: " <<
-	left << std::endl << "right index: " << right << std::endl;
-*/
+	//Using the last value in the array as the pivot, the array is organized by swapping values larger than the pivot
+	//with values smaller than the pivot
 	while(left < right)	{
 		if(arr[left] < arr[pivot])	{
 			left++;
@@ -146,7 +160,9 @@ int quick_sorter(T arr[], int low, int high, int counter)	{
 			--right;
 		}
 	}
-
+	//Once the lower and upper bound have reached eachother that means the entire array has been checked
+	//Once checked must find a position for the pivot
+	//This part of the function searches for a value larger than the pivot and swaps it with the pivot
 	bool swap = false;
 	while(swap == false)	{
 		if(arr[right] >= arr[pivot])	{
@@ -163,6 +179,8 @@ int quick_sorter(T arr[], int low, int high, int counter)	{
 		++right;
 		counter++;
 	}
+	//The function recursivly calls itself until it is partioned to a size that would be sorted from previous
+	//instances of the function.
 	if(low < right -1)	{
 		counter = quick_sorter(arr, low, right-1, counter);
 	}
@@ -173,46 +191,47 @@ int quick_sorter(T arr[], int low, int high, int counter)	{
 	return counter;
 }
 
+//Intiates quick sort on an array
+//Param: arr[] = array to be sorted. n = size of array.
+//Post: arr[] is sorted and returns barometer operation value (number of comparisons made).
 template <class T>
 int quicksort(T arr[], int n)	{
-	std::cout << "Quick Sort" << std::endl
-	<< "-------------" << std::endl << std::endl;
-
+	
 	int barometer = 0;
-
 	barometer = quick_sorter(arr, 0, n-1, barometer);
 
-	std::cout << "SORTED ARRAY IS" << std::endl <<
-	"-----------" << std::endl;
-	for(int i = 0; i < n; ++i)	{
-		std::cout << arr[i] << std::endl;
-	}
-
 	return barometer;
-
 }
 
+//Intiates shell sort on an array, and sorts the array using shell sort algorithm.
+//Param:arr[] = array to be sorted. n = size of array.
+//Post: arr[] is sorted and returns barometer operation value (number of comparisons made).
 template <class T>
 int shellsort(T arr[], int n)	{
-	std::cout << "Shell Sort" << std::endl
-	<< "-------------" << std::endl << std::endl;	
+	
 	int barometer = 0;
 	int gap = n;
 	T temp;
 	bool swap = false;
 	int back;
+	//While the gap between array indexes is larger than one, comparisons are made.
 	while(gap > 1)	{
 		gap = gap/2;
-		std::cout << "Gap Size: " << gap << std::endl;
+		//The gap is reduced by half every loop, and every index is compared to the value that is
+		//the gap indexes away.
 		for(int i = 0; (i+gap)<n; i++)	{
 			back = i;
 			barometer++;
+			//If the value is smaller, they are swapped so the array is being organized in ascending order.
 			if(arr[i] > arr[i+gap] && (i+gap) < n)	{
 				temp = arr[i];
 				arr[i] = arr[i+gap];
 				arr[i+gap] = temp;
 				swap = true;
 			}
+			//Once a swap is made, we must check if another swap can be made the same distance behind the current index.
+			//Swaps will continued to be made backwards until no swaps have been made or it is comparing values past the 
+			//array index.
 			while(swap == true)	{
 				swap = false;
 				barometer++;
@@ -229,11 +248,6 @@ int shellsort(T arr[], int n)	{
 			}
 
 		}
-	
-		for(int i = 0; i < n; ++i)	{
-			std::cout << arr[i] << ", ";
-		}
-	
 	}
 	return barometer;
 }
@@ -452,54 +466,8 @@ bool search(T arr[], int n, T target)
 
 int main()	{
 
-		void isTest();
-		void qsTest();
-		void msTest();
-		void shsTest();
-
-/*
-	int num = 100;
-	int n = rand() % 200 + 200;
-	int arr[n];
-	for(int i = 0; i < n; ++i)	{
-		arr[i] = rand() % num;
-		std::cout << arr[i] << ",";
-	}
-
-	int a = insertionsort(arr, n);
-	std::cout << "Insertion sort barometer: " << a << std::endl;
-
-
-	for(int i = 0; i < n; ++i)	{
-		arr[i] = rand() % num;
-		std::cout << arr[i] << ", ";
-	}
-
-	int b = mergesort(arr, n);
-	std::cout << "Merge sort barometer: " << b << std::endl;
-
-
-	for(int i = 0; i < n; ++i)	{
-		arr[i] = rand() % num;
-		std::cout << arr[i] << ", ";
-	}	
-
-
-	int c = quicksort(arr,n);
-	std::cout << "Quick sort barometer: " << c << std::endl;
-
-	for(int i = 0; i < n; ++i)	{
-		arr[i] = rand() % num;
-		std::cout << arr[i] << ", ";
-	}
-
-
-	std::string arr[] = {"apple", "dog", "cat", "fish", "whale", "horse", "cow", "parrot", "shark", "dolphin", "crow"};
-	int n = 11;
-
-	int d = shellsort(arr,n);
-	std::cout << "Shell sort barometer: " << d << std::endl;
-
-	return 0;
-*/
+		isTest();
+		qsTest();
+		msTest();
+		shsTest();
 }
