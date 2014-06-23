@@ -217,7 +217,7 @@ int main()	{
 		arr[i] = rand() % num;
 		std::cout << arr[i] << ",";
 	}
-/*
+
 	int a = insertionsort(arr, n);
 	std::cout << "Insertion sort barometer: " << a << std::endl;
 
@@ -241,7 +241,12 @@ int main()	{
 		arr[i] = rand() % num;
 		std::cout << arr[i] << ", ";
 	}
-*/
+
+	for(int i = 0; i < n; ++i)	{
+		arr[i] = rand() % num;
+		std::cout << arr[i] << ", ";
+	}
+
 	int d = shellsort(arr,n);
 	std::cout << "Shell sort barometer: " << d << std::endl;
 
